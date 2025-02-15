@@ -1,9 +1,26 @@
-import { ProductRepository } from "../../repositories/product.repository";
-import { BuyOutputDto, ListOutputDto, ProductService, SellOutputDto } from "./product.service";
+import { Product } from "../../entities/product";
+import { ProductRepository } from "../../repositories/product/product.repository";
+import { BuyOutputDto, CreateOutputDto, ListOutputDto, ProductService, SellOutputDto } from "./product.service";
 
-export class ProductImplementation implements ProductService {
-    private constructor(private readonly productRepository: ProductRepository) {
+export class ProductServiceImplementation implements ProductService {
+    private constructor(private readonly productRepository: ProductRepository) { }
 
+    public static build(productRepository: ProductRepository): ProductServiceImplementation {
+        return new ProductServiceImplementation(productRepository);
+    }
+
+    public async create(name: string, price: number): Promise<CreateOutputDto> {
+        const aProduct = Product.create(name, price);
+        await this.productRepository.save(aProduct);
+
+        const output: CreateOutputDto = {
+            id: aProduct.id,
+            name: aProduct.name,
+            price: aProduct.price,
+            quantity: aProduct.quantity,
+        };
+
+        return output;
     }
     public async sell(id: string, amount: number): Promise<SellOutputDto> {
         const aProduct = await this.productRepository.findById(id);

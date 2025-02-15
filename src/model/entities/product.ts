@@ -10,16 +10,16 @@ export class Product {
         readonly props: ProductProps
     ) { }
 
-    static create(name: string, price: number, quantity: number): Product {
+    static create(name: string, price: number): Product {
         return new Product({
             id: crypto.randomUUID().toString(),
             name,
             price,
-            quantity
+            quantity: 0
         });
     }
 
-    public static build(props: ProductProps): Product {
+    public static with(props: ProductProps): Product {
         return new Product(props);
     }
 
