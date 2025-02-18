@@ -35,10 +35,22 @@ export class ProductsRepositoryPrisma implements ProductRepository {
         });
     }
     public async update(product: Product): Promise<void> {
-        throw new Error("Method not implemented.");
+        await this.prisma.product.update({
+            where: { id: product.id },
+            data: {
+                name: product.name,
+                price: product.price,
+                quantity: product.quantity
+            }
+        });
     }
     public async list(): Promise<Product[]> {
-        throw new Error("Method not implemented.");
+        const products = await this.prisma.product.findMany();
+        return products.map(product => Product.with({
+            id: product.id,
+            name: product.name,
+            price: product.price,
+            quantity: product.quantity
+        }));
     }
-
 }
